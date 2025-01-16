@@ -32,6 +32,7 @@ https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2
 
 ### Known issues:
 * subscribing to more than 4 motors/servos causes an RCCHECK error
+   * If values for all 10 motors/servos can be sent as an array in one message that might be the best way to fix this (and also reduce how many messages need to be sent)
 
 ### Libraries used:
 * [JMotor](https://github.com/joshua-8/JMotor) library for motor control
