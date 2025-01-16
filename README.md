@@ -1,8 +1,9 @@
 # RCMv2-Matlab-ROS2-NoU2
 https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2
-### open in VSCode (using [PlatformIO](https://platformio.org/platformio-ide))
 
-### This is an example of controlling an Alfredo Systems NoU2 board from Matlab wirelessly using ROS 2 micro-ros for communication
+### [video of test](https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2/discussions/1)
+
+### This is an example of controlling an Alfredo Systems NoU2 board from Matlab over Wifi using ROS 2 and micro-ros for communication
 
 ## based on the [RCMv2](https://github.com/rcmgames/rcmv2) software framework
 
@@ -17,8 +18,6 @@ https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2
     * https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debs.html
 * install ros addon for matlab
 * clone this repository to your computer, open it in VS Code, and install the PlatformIO extension
-
-
 
 ## EXAMPLE
 * (I connected my computer to a wifi network from my phone since I didn't want to connect the NoU to university wifi)
