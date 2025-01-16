@@ -74,12 +74,20 @@ void error_loop()
         topic));                                                         \
     RCCHECK(rclc_executor_add_subscription(&executor, &name##Sub, &name##Msg, &name##_subscription_callback, ON_NEW_DATA));
 
-#define RCCHECK(fn)                    \
-    {                                  \
-        rcl_ret_t temp_rc = fn;        \
-        if ((temp_rc != RCL_RET_OK)) { \
-            error_loop();              \
-        }                              \
+#define RCCHECK(fn)                                                                   \
+    {                                                                                 \
+        rcl_ret_t temp_rc = fn;                                                       \
+        if ((temp_rc != RCL_RET_OK)) {                                                \
+            Serial.printf("FAIL RCCHECK, from file %s, line %d", __FILE__, __LINE__); \
+            error_loop();                                                             \
+        }                                                                             \
+    }
+#define RCSOFTCHECK(fn)                                                                    \
+    {                                                                                      \
+        rcl_ret_t temp_rc = fn;                                                            \
+        if ((temp_rc != RCL_RET_OK)) {                                                     \
+            printf("Failed status on line %d: %d. Continuing.\n", __LINE__, (int)temp_rc); \
+        }                                                                                  \
     }
 #define RCSOFTCHECK(fn)                \
     {                                  \
