@@ -147,88 +147,68 @@ void ROSWifiSettings()
     // SSID, password, IP, port (on a computer run: sudo docker run -it --rm --net=host microros/micro-ros-agent:iron udp4 --port 8888 )
     set_microros_wifi_transports("router", "password", "192.168.43.110", 8888); // doesn't complete until it connects to the wifi network
     nodeName = "nou_robot";
-    numSubscribers = 40; // change max number of subscribers
+    numSubscribers = 10; // change max number of subscribers
 }
 
 #include <example_interfaces/msg/bool.h>
-#include <std_msgs/msg/byte.h>
-#include <std_msgs/msg/float32.h>
-#include <std_msgs/msg/int32.h>
+#include <example_interfaces/msg/float32_multi_array.h>
+#include <std_msgs/msg/multi_array_layout.h>
 // and lots of other message types are available (see file available_ros2_types)
-// #include <geometry_msgs/msg/twist.h>
 
 // declare publishers
-declarePub(milliseconds, std_msgs__msg__Int32);
+declarePub(telemetry, example_interfaces__msg__Float32MultiArray);
 
-// declare subscribers and write callback functions
-declareSubAndCallback(cmd_m1, std_msgs__msg__Float32);
-motor1Val = cmd_m1Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_m2, std_msgs__msg__Float32);
-motor2Val = cmd_m2Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_m3, std_msgs__msg__Float32);
-motor3Val = cmd_m3Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_m4, std_msgs__msg__Float32);
-motor4Val = cmd_m4Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_m5, std_msgs__msg__Float32);
-motor5Val = cmd_m5Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_m6, std_msgs__msg__Float32);
-motor6Val = cmd_m6Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_s1, std_msgs__msg__Float32);
-servo1Val = cmd_s1Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_s2, std_msgs__msg__Float32);
-servo2Val = cmd_s2Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_s3, std_msgs__msg__Float32);
-servo3Val = cmd_s3Msg->data;
-} // end of callback
-
-declareSubAndCallback(cmd_s4, std_msgs__msg__Float32);
-servo4Val = cmd_s4Msg->data;
+declareSubAndCallback(control, example_interfaces__msg__Float32MultiArray);
+if (controlMsg->data.size == 10) {
+    motor1Val = controlMsg->data.data[0];
+    motor2Val = controlMsg->data.data[1];
+    motor3Val = controlMsg->data.data[2];
+    motor4Val = controlMsg->data.data[3];
+    motor5Val = controlMsg->data.data[4];
+    motor6Val = controlMsg->data.data[5];
+    servo1Val = controlMsg->data.data[6];
+    servo2Val = controlMsg->data.data[7];
+    servo3Val = controlMsg->data.data[8];
+    servo4Val = controlMsg->data.data[9];
+}
 } // end of callback
 
 void ROSbegin()
 {
     // create publishers
-    createPublisher(milliseconds, std_msgs__msg__Int32, "/rcm/milliseconds");
-    millisecondsMsg.data = 0;
+    createPublisher(telemetry, example_interfaces__msg__Float32MultiArray, "/rcm/telemetry");
+
+    telemetryMsg.data.capacity = 2; // CHANGE TO ADD MORE
+
+    telemetryMsg.data.data = (float*)malloc(telemetryMsg.data.capacity * sizeof(float));
+    telemetryMsg.data.size = telemetryMsg.data.capacity;
 
     // add subscribers
     // note, there's a built in /rcm/enabled subscriber
+    // allocate memory for the message
+    controlMsg.data.capacity = 100;
+    controlMsg.data.size = 0;
+    controlMsg.data.data = (float*)malloc(controlMsg.data.capacity * sizeof(float));
+    controlMsg.layout.data_offset = 0;
+    controlMsg.layout.dim.capacity = 100;
+    controlMsg.layout.dim.size = 0;
+    controlMsg.layout.dim.data = (example_interfaces__msg__MultiArrayDimension*)malloc(controlMsg.layout.dim.capacity * sizeof(example_interfaces__msg__MultiArrayDimension));
+    for (size_t i = 0; i < controlMsg.layout.dim.capacity; i++) {
+        controlMsg.layout.dim.data[i].label.capacity = 20;
+        controlMsg.layout.dim.data[i].label.size = 0;
+        controlMsg.layout.dim.data[i].label.data = (char*)malloc(controlMsg.layout.dim.data[i].label.capacity * sizeof(char));
+    }
 
-    // FOR SOME REASON THERE'S A MAXIMUM OF 4 SUBSCRIBERS
-    addSub(cmd_m1, std_msgs__msg__Float32, "/rcm/motor1");
-    addSub(cmd_m2, std_msgs__msg__Float32, "/rcm/motor2");
-    // addSub(cmd_m3, std_msgs__msg__Float32, "/rcm/motor3");
-    // addSub(cmd_m4, std_msgs__msg__Float32, "/rcm/motor4");
-    // addSub(cmd_m5, std_msgs__msg__Float32, "/rcm/motor5");
-    // addSub(cmd_m6, std_msgs__msg__Float32, "/rcm/motor6");
-    addSub(cmd_s1, std_msgs__msg__Float32, "/rcm/servo1");
-    addSub(cmd_s2, std_msgs__msg__Float32, "/rcm/servo2");
-    // addSub(cmd_s3, std_msgs__msg__Float32, "/rcm/servo3");
-    // addSub(cmd_s4, std_msgs__msg__Float32, "/rcm/servo4");
+    addSub(control, example_interfaces__msg__Float32MultiArray, "/rcm/control");
 }
 
 void ROSrun()
 {
-    rosSpin(1);
-    // you can add more publishers here
-    millisecondsMsg.data = millis();
-    publish(milliseconds);
+    rosSpin(50); // 20Hz
+    // you can add more data to publish here
+    telemetryMsg.data.data[0] = voltageComp.getSupplyVoltage();
+    telemetryMsg.data.data[1] = (float)millis();
+    publish(telemetry);
 }
 #endif
 

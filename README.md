@@ -28,11 +28,14 @@ https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2
 * If the blue light on the NoU2 blinks quickly, that means it didn't find the wifi network or your computer. Restart the NoU2.
     * you should see things print in the terminal of the Ubuntu VM where the micro-ros-agent is running "create_topic" and "subscriber_created"
 * open MATLAB/nou2_example.m in MATLAB and run it
-* motors 1 and 2 and servos 1 and 2 should move once a second
+    * the led on the esp32 should blink slowly, indicating enabled.
+* all motors and servos should move when a slider in the matlab UI is dragged and released
+* when you stop the MATLAB script, the led on the esp32 should blink, but be on more than it's off, indicating no enable signal received.
+
 
 ### Known issues:
 * subscribing to more than 4 motors/servos causes an RCCHECK error
-   * If values for all 10 motors/servos can be sent as an array in one message that might be the best way to fix this (and also reduce how many messages need to be sent)
+   * v2.0 now sends one message for all motors/servos so this is no longer as much of an issue
 
 ### Libraries used:
 * [JMotor](https://github.com/joshua-8/JMotor) library for motor control

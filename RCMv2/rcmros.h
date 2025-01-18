@@ -42,7 +42,7 @@ void error_loop()
  */
 #define declareSubAndCallback(name, type)                \
     rcl_subscription_t name##Sub;                        \
-    type name##Msg;                                      \
+    type name##Msg; /* memory for addSub to use */       \
     void name##_subscription_callback(const void* msgin) \
     {                                                    \
         const type* name##Msg = (const type*)msgin;
