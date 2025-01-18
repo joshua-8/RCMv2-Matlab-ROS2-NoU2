@@ -3,6 +3,9 @@ https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2
 
 ### [video of test](https://github.com/joshua-8/RCMv2-Matlab-ROS2-NoU2/discussions/1)
 
+![image](https://github.com/user-attachments/assets/97fda84f-298d-45d0-8df6-68d39561bb4b)
+
+
 ### This is an example of controlling an Alfredo Systems NoU2 board from Matlab over Wifi using ROS 2 and micro-ros for communication
 
 ## based on the [RCMv2](https://github.com/rcmgames/rcmv2) software framework
